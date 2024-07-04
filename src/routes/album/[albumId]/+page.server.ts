@@ -1,5 +1,6 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "$env/static/private";
 import { Album, Client } from 'spotify-api.js';
+import { type TrackModel, type AlbumModel } from '$lib/models';
 
 const CLIENT = new Client({
     token: {
@@ -9,18 +10,21 @@ const CLIENT = new Client({
 });
 
 export const load = async ({ params }) => {    
-    const getAlbumById = async (albumId: string) => {
-        let album = await CLIENT.albums.get(albumId) as Album;
-        return {
+    const getAlbumById = async (albumId: string): Promise<AlbumModel> => {
+        const album = await CLIENT.albums.get(albumId) as Album;
+        const trackList: TrackModel[] = album.tracks?.map((track) => {
+            return {
+                id: track.id,
+                name: track.name,
+                duration: Math.ceil(track.duration / 1000),
+                previewURL: track.previewURL,
+            };
+        }) ?? [];
+        const albumModel: AlbumModel = {
             name: album.name,
-            tracks: album.tracks?.map((track) => {
-                return {
-                    name: track.name,
-                    duration: Math.ceil(track.duration / 1000),
-                    previewURL: track.previewURL,
-                }
-            }) as {name: string, duration: number, previewURL: string}[],
+            trackList: trackList,
         }
+        return albumModel;
     };
 
     return {

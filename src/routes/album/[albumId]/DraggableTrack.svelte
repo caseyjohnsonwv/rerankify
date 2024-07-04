@@ -1,25 +1,22 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import type { AudioManager } from '$lib/audioManager';
+    import { type TrackModel } from '$lib/models';
+    
+    // things we need to reference this track in the global player
+    export let globalAudioManager: AudioManager;
+    export let trackId: string;
 
-    export let props: {name: string, duration: number, previewURL: string};
-    let isStarred: boolean = false;
-
-    let isPlaying: boolean = false;
-    let audio = new Audio(props.previewURL);
-    onMount(() => {
-        audio.onplay = () => isPlaying = true;
-        audio.onpause = () => isPlaying = false;
-        audio.onended = () => isPlaying = false;
-    });
-
+    // things we need for reactive global music playing
+    let props: TrackModel;
+    globalAudioManager.trackListStore.subscribe((trackList) => {
+        props = trackList.filter((track) => track.id === trackId).at(0) as TrackModel
+    })
     const toggleSongPreview = () => {
-        if (!isPlaying) audio.play()
-        else {
-            audio.pause();
-            audio.currentTime = 0;
-        }
+        globalAudioManager.toggleTrack(props.id);
     }
 
+    // other props
+    let isStarred: boolean = false;
     const toggleStarredStatus = () => {
         isStarred = !isStarred;
     }
@@ -32,7 +29,7 @@
     <button on:click|preventDefault={toggleSongPreview} class="w-1/3 bg-slate-800 hover:bg-slate-900 rounded-md">
         <div class="text-center items-baseline flex justify-center space-x-3 py-3 hover:cursor-pointer">
             <p class="font-light text-slate-400">Preview</p>
-            <i class="fa-solid {isPlaying ? 'fa-circle-stop' : 'fa-circle-play'} text-lg"></i>
+            <i class="fa-solid {props.isPlaying ? 'fa-circle-stop' : 'fa-circle-play'} text-lg"></i>
         </div>
     </button>
     <div class="w-1/6 items-middle justify-end space-x-5 flex">
