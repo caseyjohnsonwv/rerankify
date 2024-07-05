@@ -4,6 +4,8 @@ export interface TrackModel {
     duration: number;
     previewURL: string;
     isPlaying?: boolean;
+    isDragging?: boolean;
+    rankOrder?: number;
 }
 
 export interface AlbumModel {
