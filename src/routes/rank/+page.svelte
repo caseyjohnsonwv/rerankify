@@ -1,1 +1,7 @@
-<div>protected</div>
+<script lang="ts">
+    
+</script>
+
+<div>
+
+</div>
