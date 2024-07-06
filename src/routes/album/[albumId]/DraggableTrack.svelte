@@ -14,12 +14,6 @@
     const toggleSongPreview = () => {
         globalTrackManager.toggleTrack(props.id);
     }
-
-    // other props
-    let isStarred: boolean = false;
-    const toggleStarredStatus = () => {
-        isStarred = !isStarred;
-    }
 </script>
 
 <li draggable="true" class="list-none"
@@ -38,11 +32,8 @@
                 <i class="fa-solid {props.isPlaying ? 'fa-circle-stop' : 'fa-circle-play'} text-lg"></i>
             </div>
         </button>
+        <p class="font-mono text-slate-400">{ Math.floor(props.duration / 60) }:{ `${props.duration % 60}`.padStart(2, "0") }</p>
         <div class="w-1/6 items-middle justify-end space-x-5 flex">
-            <p class="font-mono text-slate-400">{ Math.floor(props.duration / 60) }:{ `${props.duration % 60}`.padStart(2, "0") }</p>
-            <button on:click|preventDefault={toggleStarredStatus}>
-                <i class="fa-solid fa-star text-xl hover:cursor-pointer hover:text-amber-500 {isStarred ? 'text-amber-500' : 'text-slate-200'}"></i>
-            </button>
             <div><i class="fa-solid fa-bars text-2xl"></i></div>
         </div>
     </div>

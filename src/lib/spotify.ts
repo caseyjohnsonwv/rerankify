@@ -27,6 +27,7 @@ export class SpotifyWrapper {
         const albumModel: AlbumModel = {
             name: album.name,
             trackList: trackList,
+            imageUrl: album.images.at(0)?.url,
         }
         return albumModel;
     };

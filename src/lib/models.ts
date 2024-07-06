@@ -11,4 +11,5 @@ export interface TrackModel {
 export interface AlbumModel {
     name: string;
     trackList: TrackModel[];
+    imageUrl?: string;
 }
