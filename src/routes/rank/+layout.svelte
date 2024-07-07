@@ -25,5 +25,7 @@
             </button>
         </div>
     </nav>
-    <slot/>
+    <div class="pt-4">
+        <slot/>
+    </div>
 {/if}

@@ -11,6 +11,24 @@ export class TrackManager {
     }
 
 
+    // handler for adding and removing tracks
+
+
+    addTrack(track: TrackModel) {
+        this.trackListStore.update((trackList) => {
+            trackList.push(track);
+            return trackList;
+        })
+    }
+
+    removeTrackById(id: string) {
+        if (this.currentTrackId === id) this.toggleTrack(id);
+        this.trackListStore.update((trackList) => {
+            return trackList.filter((track) => track.id !== id);
+        })
+    }
+
+
     // handlers for single audio global playback
 
 
@@ -89,8 +107,13 @@ export class TrackManager {
 
     private initAudio(src:string) {
         this.globalAudio = new Audio(src);
-        this.globalAudio.onpause = () => this.globalAudio!.currentTime = 0;
-        this.globalAudio.onended = () => this.globalAudio!.currentTime = 0;
+        this.globalAudio.onpause = () => {
+            this.globalAudio!.currentTime = 0
+        };
+        this.globalAudio.onended = () => {
+            this.globalAudio!.currentTime = 0
+            this.trackListStore.update((trackList) => trackList.map((track) => {return {...track, isPlaying: false}}));
+        };
         this.globalAudio.play();
     }
 }
