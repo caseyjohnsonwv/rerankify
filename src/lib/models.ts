@@ -17,3 +17,8 @@ export interface AlbumModel {
     artistNames: string[];
     trackList: TrackModel[];
 }
+
+export interface SearchResult {
+    albums: AlbumModel[],
+    tracks: TrackModel[],
+}

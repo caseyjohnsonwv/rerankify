@@ -1,12 +1,13 @@
 import { type TrackModel } from "./models";
-import { writable, type Writable } from "svelte/store";
+import { writable, get, type Writable } from "svelte/store";
 
 export class TrackManager {
     private globalAudio: HTMLAudioElement | undefined;
-    private currentTrackId: string | undefined;
+    currentTrackIdStore: Writable<string | undefined>;
     trackListStore: Writable<TrackModel[]>;
 
     constructor(trackList: TrackModel[]) {
+        this.currentTrackIdStore = writable<string>(undefined);
         this.trackListStore = writable<TrackModel[]>(trackList);
     }
 
@@ -22,7 +23,9 @@ export class TrackManager {
     }
 
     removeTrackById(id: string) {
-        if (this.currentTrackId === id) this.toggleTrack(id);
+        if (get(this.currentTrackIdStore) === id) {
+            this.globalAudio?.pause();
+        };
         this.trackListStore.update((trackList) => {
             return trackList.filter((track) => track.id !== id);
         })
@@ -31,46 +34,13 @@ export class TrackManager {
 
     // handlers for single audio global playback
 
-    
-    toggleTemporaryTrack(track: TrackModel): TrackModel | undefined {
+
+    toggleTrackPlayback(track: TrackModel) {
+        const lastPlayingTrackId = get(this.currentTrackIdStore);
         this.globalAudio?.pause();
-        this.trackListStore.update((trackList) =>
-            trackList.map((track) => {return {...track, isPlaying: false}})
-        );
-        if (track.id === this.currentTrackId) {
-            this.currentTrackId = undefined;
-            return undefined;
+        if (track.id !== lastPlayingTrackId) {
+            this.initAudio(track);
         }
-        else {
-            this.currentTrackId = track.id;
-            this.initAudio(track.previewURL);
-            return track;
-        }
-    }
-
-    isCurrentTrackId(id: string): boolean {
-        return this.currentTrackId === id;
-    }
-
-    toggleTrack(id: string) {
-        this.globalAudio?.pause();
-
-        this.trackListStore.update((trackList) => {
-            const requestedTrack = trackList.filter((track) => track.id === id).at(0) as TrackModel;
-            // handle playback of selected track
-            if (this.currentTrackId === id) {
-                this.currentTrackId = undefined;
-            }
-            else {
-                this.currentTrackId = requestedTrack.id;
-                this.initAudio(requestedTrack.previewURL);
-            }
-            // return with updated props
-            return trackList.map((track) => track.id === this.currentTrackId
-                ? {...track, isPlaying: true}
-                : {...track, isPlaying: false}
-            );
-        });
     }
 
 
@@ -121,15 +91,18 @@ export class TrackManager {
     // internal functions
 
 
-    private initAudio(src:string) {
-        this.globalAudio = new Audio(src);
+    private initAudio(track: TrackModel) {
+        this.globalAudio = new Audio(track.previewURL);
+        this.globalAudio.onplay = () => {
+            this.currentTrackIdStore.set(track.id);
+            this.trackListStore.update((trackList) => trackList.map((trackItem) => {return {...trackItem, isPlaying: trackItem.id === track.id}}))
+        }
         this.globalAudio.onpause = () => {
             this.globalAudio!.currentTime = 0
-        };
-        this.globalAudio.onended = () => {
-            this.globalAudio!.currentTime = 0
+            this.currentTrackIdStore.set(undefined);
             this.trackListStore.update((trackList) => trackList.map((track) => {return {...track, isPlaying: false}}));
         };
+        this.globalAudio.onended = this.globalAudio.onpause;
         this.globalAudio.play();
     }
 }

@@ -1,6 +1,6 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "$env/static/private";
 import { Album, Client, Track } from 'spotify-api.js';
-import { type TrackModel, type AlbumModel } from '$lib/models';
+import { type TrackModel, type AlbumModel, type SearchResult } from '$lib/models';
 
 
 const CLIENT = new Client({
@@ -15,14 +15,17 @@ export class SpotifyWrapper {
 
     // exposed methods
 
-    async search(query: string): Promise<(TrackModel|AlbumModel)[]> {
+    async search(query: string): Promise<SearchResult> {
         const res = await CLIENT.search(query, {
             types: ['album', 'track'],
             limit: 10,
         });
         const albums = res.albums?.map((album) => this.convertAlbumToAlbumModel(album)) ?? [];
         const tracks = res.tracks?.map((track) => this.convertTrackToTrackModel(track)) ?? [];
-        return [...tracks, ...albums]
+        return {
+            albums: albums,
+            tracks: tracks,
+        }
     }
 
     // private converter methods
