@@ -43,12 +43,14 @@ export class SpotifyWrapper {
     }
 
     private convertAlbumToAlbumModel(album: Album): AlbumModel {
-        const trackList = album.tracks?.map((track) => this.convertTrackToTrackModel(track)) ?? [];
+        let releaseYear = album.releaseDate.match(/\d{4}/)?.at(0);
         const albumModel: AlbumModel = {
             name: album.name,
+            type: album.albumType,
             coverArtUrl: album.images.at(0)?.url,
             artistNames: album.artists.map((artist) => artist.name),
-            trackList: trackList,
+            trackCount: album.totalTracks,
+            releaseYear: releaseYear ? parseInt(releaseYear) : undefined,
         }
         return albumModel;
     }

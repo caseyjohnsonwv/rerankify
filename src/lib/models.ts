@@ -13,9 +13,11 @@ export interface TrackModel {
 
 export interface AlbumModel {
     name: string;
+    type: string;
     coverArtUrl?: string;
     artistNames: string[];
-    trackList: TrackModel[];
+    trackCount: number;
+    releaseYear?: number;
 }
 
 export interface SearchResult {
