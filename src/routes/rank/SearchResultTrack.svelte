@@ -5,7 +5,7 @@
     export let globalTrackManager: TrackManager;
     export let trackProps: TrackModel;
 
-    const currentTrackIdStore = globalTrackManager.currentTrackIdStore;
+    const currentTrackStore = globalTrackManager.currentTrackStore;
 
     const handlePlayToggle = async (track: TrackModel) => {
         globalTrackManager.toggleTrackPlayback(track);
@@ -26,10 +26,10 @@
     </div>
     <button on:click={() => handlePlayToggle(trackProps)} on:keydown={(e) => {if(e.keyCode === 32) e.preventDefault()}}
         class="col-span-3 flex flex-row  justify-center w-full py-3 rounded-lg outline-none space-x-2 items-center
-        {trackProps.id === $currentTrackIdStore ? 'bg-purple-600 hover:bg-purple-500 text-stone-100 animate-pulse' : 'bg-stone-200 hover:bg-stone-300'}
+        {trackProps.id === $currentTrackStore?.id ? 'bg-purple-600 hover:bg-purple-500 text-stone-100 animate-pulse' : 'bg-stone-200 hover:bg-stone-300'}
         ">
         <span class="text-xs">Preview</span>
-        {#if trackProps.id === $currentTrackIdStore}
+        {#if trackProps.id === $currentTrackStore?.id}
             <i class="fa-solid fa-circle-stop"></i>
         {:else}
             <i class="fa-solid fa-circle-play"></i>

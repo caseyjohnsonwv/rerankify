@@ -3,11 +3,11 @@ import { writable, get, type Writable } from "svelte/store";
 
 export class TrackManager {
     private globalAudio: HTMLAudioElement | undefined;
-    currentTrackIdStore: Writable<string | undefined>;
+    currentTrackStore: Writable<TrackModel | undefined>;
     trackListStore: Writable<TrackModel[]>;
 
     constructor(trackList: TrackModel[]) {
-        this.currentTrackIdStore = writable<string>(undefined);
+        this.currentTrackStore = writable<TrackModel>(undefined);
         this.trackListStore = writable<TrackModel[]>(trackList);
     }
 
@@ -23,7 +23,7 @@ export class TrackManager {
     }
 
     removeTrackById(id: string) {
-        if (get(this.currentTrackIdStore) === id) {
+        if (get(this.currentTrackStore)?.id === id) {
             this.globalAudio?.pause();
         };
         this.trackListStore.update((trackList) => {
@@ -36,7 +36,7 @@ export class TrackManager {
 
 
     toggleTrackPlayback(track: TrackModel) {
-        const lastPlayingTrackId = get(this.currentTrackIdStore);
+        const lastPlayingTrackId = get(this.currentTrackStore)?.id;
         this.globalAudio?.pause();
         if (track.id !== lastPlayingTrackId) {
             this.initAudio(track);
@@ -94,12 +94,12 @@ export class TrackManager {
     private initAudio(track: TrackModel) {
         this.globalAudio = new Audio(track.previewURL);
         this.globalAudio.onplay = () => {
-            this.currentTrackIdStore.set(track.id);
+            this.currentTrackStore.set(track);
             this.trackListStore.update((trackList) => trackList.map((trackItem) => {return {...trackItem, isPlaying: trackItem.id === track.id}}))
         }
         this.globalAudio.onpause = () => {
             this.globalAudio!.currentTime = 0
-            this.currentTrackIdStore.set(undefined);
+            this.currentTrackStore.set(undefined);
             this.trackListStore.update((trackList) => trackList.map((track) => {return {...track, isPlaying: false}}));
         };
         this.globalAudio.onended = this.globalAudio.onpause;

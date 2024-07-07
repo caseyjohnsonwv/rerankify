@@ -5,7 +5,7 @@
     export let globalTrackManager: TrackManager;
     export let albumProps: AlbumModel;
 
-    const currentTrackIdStore = globalTrackManager.currentTrackIdStore;
+    const currentTrackStore = globalTrackManager.currentTrackStore;
 
     const handleAddToTrackManager = async (album: AlbumModel) => {
         // album.trackList.map((track) => globalTrackManager.addTrack(track));
