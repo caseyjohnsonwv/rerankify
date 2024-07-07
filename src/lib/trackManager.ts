@@ -31,6 +31,22 @@ export class TrackManager {
 
     // handlers for single audio global playback
 
+    
+    toggleTemporaryTrack(track: TrackModel): TrackModel | undefined {
+        this.globalAudio?.pause();
+        this.trackListStore.update((trackList) =>
+            trackList.map((track) => {return {...track, isPlaying: false}})
+        );
+        if (track.id === this.currentTrackId) {
+            this.currentTrackId = undefined;
+            return undefined;
+        }
+        else {
+            this.currentTrackId = track.id;
+            this.initAudio(track.previewURL);
+            return track;
+        }
+    }
 
     isCurrentTrackId(id: string): boolean {
         return this.currentTrackId === id;

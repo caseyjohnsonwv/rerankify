@@ -11,12 +11,7 @@
 
     // $: albumResults = searchResults?.filter((item) => (item as AlbumModel).trackList !== undefined) as AlbumModel[] ?? [];
     $: trackResults = searchResults?.filter((item) => (item as TrackModel).duration !== undefined) as TrackModel[] ?? [];
-
-    // subscribe to trackListStore for reactivity in search results
     let currentlyPlayingTrack: TrackModel | undefined;
-    globalTrackManager.trackListStore.subscribe((trackList) => {
-        currentlyPlayingTrack = trackList.filter((track) => track.isPlaying === true)?.at(0);
-    });
 
     const handleKeydown = async (e:KeyboardEvent) => {
         // only search once 3+ characters are entered
@@ -31,17 +26,10 @@
     }
 
     const handlePlayToggle = async (track: TrackModel) => {
-        const lastPlayedTrackId = currentlyPlayingTrack?.id;
-        if (track.id !== currentlyPlayingTrack?.id && track.previewURL) {
-            // temporarily add the track to the global manager to prevent multi-playback
-            globalTrackManager.addTrack(track);
-            globalTrackManager.toggleTrack(track.id);
-        }
-        if (lastPlayedTrackId) globalTrackManager.removeTrackById(lastPlayedTrackId);
+        currentlyPlayingTrack = globalTrackManager.toggleTemporaryTrack(track);
     }
 
     const handleAddToTrackManager = async (track: TrackModel) => {
-        handlePlayToggle(track);
         globalTrackManager.addTrack(track);
     }
 </script>
@@ -74,7 +62,7 @@
             </button>
             <div class="col-span-1 flex flex-row items-center justify-end space-x-2">
                 <span class="font-light text-xs">{Math.floor(trackProps.duration / 60) }:{ `${trackProps.duration % 60}`.padStart(2, "0")}</span>
-                <button>
+                <button on:click={() => handleAddToTrackManager(trackProps)}>
                     <i class="fa-solid fa-circle-plus text-xl text-purple-700 hover:text-purple-900"></i>
                 </button>
             </div>

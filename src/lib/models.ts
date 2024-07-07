@@ -5,6 +5,7 @@ export interface TrackModel {
     artistNames: string[];
     duration: number;
     previewURL: string;
+    isPreview?: boolean;
     isPlaying?: boolean;
     isDragging?: boolean;
     rankOrder?: number;
