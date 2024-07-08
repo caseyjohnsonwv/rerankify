@@ -1,14 +1,16 @@
-import { type TrackModel } from "./models";
+import { type AlbumModel, type TrackModel } from "./models";
 import { writable, get, type Writable } from "svelte/store";
 
 export class TrackManager {
     private globalAudio: HTMLAudioElement | undefined;
     currentTrackStore: Writable<TrackModel | undefined>;
     trackListStore: Writable<TrackModel[]>;
+    albumTrackCountStore: Writable<Map<string, number>>;
 
     constructor(trackList: TrackModel[]) {
         this.currentTrackStore = writable<TrackModel>(undefined);
         this.trackListStore = writable<TrackModel[]>(trackList);
+        this.albumTrackCountStore = writable<Map<string, number>>(new Map());
     }
 
 
@@ -16,19 +18,36 @@ export class TrackManager {
 
 
     addTrack(track: TrackModel) {
-        this.trackListStore.update((trackList) => {
-            trackList.push(track);
-            return trackList;
-        })
+        const trackIds = get(this.trackListStore).map((track) => track.id);
+        if (!trackIds.includes(track.id)) {
+            this.trackListStore.update((trackList) => {
+                trackList.push(track);
+                return trackList;
+            });
+            if (track.albumId) {
+                this.albumTrackCountStore.update((m) => {
+                    m.set(track.albumId as string, (m.get(track.albumId as string) ?? 0) + 1)
+                    return m;
+                })
+            }
+        }
     }
 
     removeTrackById(id: string) {
         if (get(this.currentTrackStore)?.id === id) {
             this.globalAudio?.pause();
         };
+        const removedTrack = get(this.trackListStore).filter((track) => track.id === id).at(0);
         this.trackListStore.update((trackList) => {
             return trackList.filter((track) => track.id !== id);
         })
+        if (removedTrack?.albumId) {
+            this.albumTrackCountStore.update((m) => {
+                const newValue = Math.max(0, m.get(removedTrack.albumId as string) ?? 0 - 1);
+                m.set(removedTrack.albumId as string, newValue);
+                return m;
+            })
+        }
     }
 
 

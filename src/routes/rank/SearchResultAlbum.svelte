@@ -6,13 +6,33 @@
     export let globalTrackManager: TrackManager;
     export let albumProps: AlbumModel;
 
+    const enum AlbumAddState {
+        NONE = 'none',
+        PARTIAL = 'partial',
+        ALL = 'all',
+    }
+    
+    let albumTrackCount: number = -1;
+    let albumAddState: AlbumAddState = AlbumAddState.NONE;
+    let remainingAddCount: number = albumProps.trackCount;
+    const albumCountTrackStore = globalTrackManager.albumTrackCountStore;
+    albumCountTrackStore.subscribe((m) => {
+        albumTrackCount = m.get(albumProps.id) ?? 0
+        if (albumTrackCount <= 0) albumAddState = AlbumAddState.NONE
+        else if (albumTrackCount === albumProps.trackCount) albumAddState = AlbumAddState.ALL
+        else albumAddState = AlbumAddState.PARTIAL;
+        remainingAddCount = albumProps.trackCount - albumTrackCount;
+    });
+
     const handleAddToTrackManager = async (album: AlbumModel) => {
-        const res = await fetch(backendRoutes.tracksByAlbumId, {
-            method: 'POST',
-            body: JSON.stringify({ albumId: album.id }),
-        });
-        const trackListResults = await res.json() as TracksByAlbumIdResult;
-        trackListResults.trackList.forEach((track) => globalTrackManager.addTrack(track));
+        if (albumAddState !== AlbumAddState.ALL) {
+            const res = await fetch(backendRoutes.tracksByAlbumId, {
+                method: 'POST',
+                body: JSON.stringify({ albumId: album.id }),
+            });
+            const trackListResults = await res.json() as TracksByAlbumIdResult;
+            trackListResults.trackList.forEach((track) => globalTrackManager.addTrack(track));
+        }
     }
 </script>
 
@@ -30,8 +50,18 @@
     </div>
     <button on:click={() => handleAddToTrackManager(albumProps)} class="col-span-2 p-2 rounded-lg flex flex-row items-center justify-end space-x-4 bg-stone-200 hover:bg-stone-300">
         <div class="flex-grow text-left text-sm px-3">
-            Add <span class="font-bold px-1">{albumProps.trackCount}</span> {albumProps.trackCount > 1 ? 'items' : 'item'}
+            {#if albumAddState === AlbumAddState.ALL}
+                <span class="italic">All Items Added</span>
+            {:else}
+                Add <span class="font-bold px-1">{remainingAddCount}</span> {remainingAddCount === 1 ? 'item' : 'items'}
+            {/if}
         </div>
-        <i class="fa-solid fa-circle-plus text-xl text-purple-700 hover:text-purple-900"></i>
+        {#if albumAddState === AlbumAddState.NONE}
+            <i class="fa-solid fa-circle-plus text-xl text-purple-700 hover:text-purple-900"></i>
+        {:else if albumAddState === AlbumAddState.PARTIAL}
+            <i class="fa-solid fa-circle-plus text-xl text-yellow-600 hover:text-yellow-800"></i>
+        {:else}
+            <i class="fa-solid fa-circle-check text-xl text-green-600 hover:text-green-800"></i>
+        {/if}
     </button>
 </div>

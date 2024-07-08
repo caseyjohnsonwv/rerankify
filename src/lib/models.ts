@@ -1,6 +1,7 @@
 export interface TrackModel {
     id: string;
     name: string;
+    albumId?: string;
     coverArtUrl?: string;
     artistNames: string[];
     duration: number;
@@ -8,7 +9,6 @@ export interface TrackModel {
     isPreview?: boolean;
     isPlaying?: boolean;
     isDragging?: boolean;
-    rankOrder?: number;
 }
 
 export interface AlbumModel {

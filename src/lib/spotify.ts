@@ -29,8 +29,13 @@ export class SpotifyWrapper {
     }
     
     async getTracksByAlbumId(albumId: string): Promise<TracksByAlbumIdResult> {
+        // KNOWN BUG: ONLY RETRIEVES 20 ITEMS
         const res = await CLIENT.albums.getTracks(albumId);
-        return {trackList: res.map((track) => this.convertTrackToTrackModel(track))}
+        const trackList = res.map((track) => {
+            const trackModel = this.convertTrackToTrackModel(track);
+            return {...trackModel, albumId: albumId}
+        })
+        return {trackList: trackList}
     }
 
     // private converter methods    
@@ -39,11 +44,11 @@ export class SpotifyWrapper {
         return {
             id: track.id,
             name: track.name,
+            albumId: track.album?.id,
             artistNames: track.artists.map((artist) => artist.name),
             coverArtUrl: track.album?.images.at(0)?.url,
             duration: Math.ceil(track.duration / 1000),
             previewURL: track.previewURL,
-            isPlaying: false,
         };
     }
 
