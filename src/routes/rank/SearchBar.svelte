@@ -7,8 +7,7 @@
 
 
     export let globalTrackManager: TrackManager;
-    const trackListStore = globalTrackManager.trackListStore;
-
+    
 
     const enum SearchResultsType {
         ALBUMS = 'Albums',
@@ -24,10 +23,6 @@
     let searchString: string = "";
     let albumSearchResults = [] as AlbumModel[];
     let trackSearchResults = [] as TrackModel[];
-    trackListStore.subscribe((trackList) => {
-        const trackIds = trackList.map((track) => track.id);
-        trackSearchResults = trackSearchResults.filter((track) => !trackIds.includes(track.id));
-    })
 
     $: { 
         if (searchString.length < 3) {

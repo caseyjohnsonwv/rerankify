@@ -6,13 +6,17 @@
     export let trackProps: TrackModel;
 
     const currentTrackStore = globalTrackManager.currentTrackStore;
+    const trackListStore = globalTrackManager.trackListStore;
+
+    $: isAdded = $trackListStore.filter((track) => track.id === trackProps.id).at(0) !== undefined;
 
     const handlePlayToggle = async (track: TrackModel) => {
         globalTrackManager.toggleTrackPlayback(track);
     }
 
-    const handleAddToTrackManager = async (track: TrackModel) => {
-        globalTrackManager.addTrack(track);
+    const handleTrackManagerAction = async (track: TrackModel) => {
+        if (!isAdded) globalTrackManager.addTrack(track);
+        else globalTrackManager.removeTrackById(track.id);
     }
 </script>
 
@@ -37,8 +41,12 @@
     </button>
     <div class="col-span-1 flex flex-row items-center justify-end space-x-2">
         <span class="text-xs">{Math.floor(trackProps.duration / 60) }:{ `${trackProps.duration % 60}`.padStart(2, "0")}</span>
-        <button on:click={() => handleAddToTrackManager(trackProps)} class="flex flex-row items-center">
-            <i class="fa-solid fa-circle-plus text-xl text-purple-700 hover:text-purple-900"></i>
+        <button on:click={() => handleTrackManagerAction(trackProps)} class="flex flex-row items-center">
+            {#if isAdded}
+                <i class="fa-solid fa-circle-check text-xl text-green-600 hover:text-green-800"></i>
+            {:else}
+                <i class="fa-solid fa-circle-plus text-xl text-purple-700 hover:text-purple-900"></i>
+            {/if}
         </button>
     </div>
 </div>
