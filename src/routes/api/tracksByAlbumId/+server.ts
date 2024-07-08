@@ -5,6 +5,6 @@ const spotifyWrapper = new SpotifyWrapper();
 
 export const POST: RequestHandler = async ({ request }) => {
     const data = await request.json();
-    const results = await spotifyWrapper.search(data.query);
+    const results = await spotifyWrapper.getTracksByAlbumId(data.albumId);
     return json(results);
 }

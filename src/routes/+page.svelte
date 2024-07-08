@@ -6,7 +6,7 @@
     }
 </script>
 
-<div class="w-1/6 mx-auto flex flex-col justify-center min-h-screen space-y-12">
+<div class="w-1/3 max-w-96 mx-auto flex flex-col justify-center min-h-screen space-y-12">
     <div class="flex flex-col space-y-4 text-center">
         <h1 class="text-5xl font-bold italic">Rankify.</h1>
         <span>The better way to rank music.</span>

@@ -12,6 +12,7 @@ export interface TrackModel {
 }
 
 export interface AlbumModel {
+    id: string;
     name: string;
     type: string;
     coverArtUrl?: string;
@@ -23,4 +24,8 @@ export interface AlbumModel {
 export interface SearchResult {
     albums: AlbumModel[],
     tracks: TrackModel[],
+}
+
+export interface TracksByAlbumIdResult {
+    trackList: TrackModel[],
 }

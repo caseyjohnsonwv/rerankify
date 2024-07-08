@@ -1,14 +1,18 @@
 <script lang="ts">
-    import type { AlbumModel } from "$lib/models";
+    import type { AlbumModel, TracksByAlbumIdResult } from "$lib/models";
     import type { TrackManager } from "$lib/trackManager";
+    import { backendRoutes } from "$lib/routes";
 
     export let globalTrackManager: TrackManager;
     export let albumProps: AlbumModel;
 
-    const currentTrackStore = globalTrackManager.currentTrackStore;
-
     const handleAddToTrackManager = async (album: AlbumModel) => {
-        // album.trackList.map((track) => globalTrackManager.addTrack(track));
+        const res = await fetch(backendRoutes.tracksByAlbumId, {
+            method: 'POST',
+            body: JSON.stringify({ albumId: album.id }),
+        });
+        const trackListResults = await res.json() as TracksByAlbumIdResult;
+        trackListResults.trackList.forEach((track) => globalTrackManager.addTrack(track));
     }
 </script>
 

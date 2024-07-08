@@ -1,6 +1,6 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "$env/static/private";
 import { Album, Client, Track } from 'spotify-api.js';
-import { type TrackModel, type AlbumModel, type SearchResult } from '$lib/models';
+import { type TrackModel, type AlbumModel, type SearchResult, type TracksByAlbumIdResult } from '$lib/models';
 
 
 const CLIENT = new Client({
@@ -27,8 +27,13 @@ export class SpotifyWrapper {
             tracks: tracks,
         }
     }
+    
+    async getTracksByAlbumId(albumId: string): Promise<TracksByAlbumIdResult> {
+        const res = await CLIENT.albums.getTracks(albumId);
+        return {trackList: res.map((track) => this.convertTrackToTrackModel(track))}
+    }
 
-    // private converter methods
+    // private converter methods    
 
     private convertTrackToTrackModel(track: Track): TrackModel {
         return {
@@ -45,6 +50,7 @@ export class SpotifyWrapper {
     private convertAlbumToAlbumModel(album: Album): AlbumModel {
         let releaseYear = album.releaseDate.match(/\d{4}/)?.at(0);
         const albumModel: AlbumModel = {
+            id: album.id,
             name: album.name,
             type: album.albumType,
             coverArtUrl: album.images.at(0)?.url,

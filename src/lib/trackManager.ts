@@ -38,7 +38,7 @@ export class TrackManager {
     toggleTrackPlayback(track: TrackModel) {
         const lastPlayingTrackId = get(this.currentTrackStore)?.id;
         this.globalAudio?.pause();
-        if (track.id !== lastPlayingTrackId) {
+        if (track?.id !== lastPlayingTrackId) {
             this.initAudio(track);
         }
     }

@@ -26,7 +26,7 @@
     </div>
     <button on:click={() => handlePlayToggle(trackProps)} on:keydown={(e) => {if(e.keyCode === 32) e.preventDefault()}}
         class="col-span-3 flex flex-row  justify-center w-full py-3 rounded-lg outline-none space-x-2 items-center
-        {trackProps.id === $currentTrackStore?.id ? 'bg-purple-600 hover:bg-purple-500 text-stone-100 animate-pulse' : 'bg-stone-200 hover:bg-stone-300'}
+        {trackProps.id === $currentTrackStore?.id ? 'bg-purple-600 hover:bg-purple-500 text-stone-100' : 'bg-stone-200 hover:bg-stone-300'}
         ">
         <span class="text-xs">Preview</span>
         {#if trackProps.id === $currentTrackStore?.id}
