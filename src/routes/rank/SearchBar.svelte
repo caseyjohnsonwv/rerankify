@@ -33,7 +33,7 @@
 
     const handleKeydown = async (e:KeyboardEvent) => {
         // only search once 3+ characters are entered
-        if (searchString.length < 2) return;
+        if (searchString.length < 3) return;
         const res = await fetch(backendRoutes.search, {
             method: 'POST',
             body: JSON.stringify({ query: searchString }),

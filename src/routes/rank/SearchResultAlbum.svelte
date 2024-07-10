@@ -11,18 +11,18 @@
         PARTIAL = 'partial',
         ALL = 'all',
     }
+
+    const determineAlbumAddState = (currentCount: number, totalCount: number) => {
+        if (currentCount === 0) return AlbumAddState.NONE
+        else if (currentCount === totalCount) return AlbumAddState.ALL
+        else return AlbumAddState.PARTIAL;
+    }
     
-    let albumTrackCount: number = -1;
-    let albumAddState: AlbumAddState = AlbumAddState.NONE;
-    let remainingAddCount: number = albumProps.trackCount;
     const albumCountTrackStore = globalTrackManager.albumTrackCountStore;
-    albumCountTrackStore.subscribe((m) => {
-        albumTrackCount = m.get(albumProps.id) ?? 0
-        if (albumTrackCount <= 0) albumAddState = AlbumAddState.NONE
-        else if (albumTrackCount === albumProps.trackCount) albumAddState = AlbumAddState.ALL
-        else albumAddState = AlbumAddState.PARTIAL;
-        remainingAddCount = albumProps.trackCount - albumTrackCount;
-    });
+    $: albumTrackCount = $albumCountTrackStore.get(albumProps.id) ?? 0;
+    $: albumAddState = determineAlbumAddState(albumTrackCount, albumProps.trackCount);
+    $: remainingAddCount = albumProps.trackCount - albumTrackCount;
+
 
     const handleAddToTrackManager = async (album: AlbumModel) => {
         if (albumAddState !== AlbumAddState.ALL) {
@@ -52,6 +52,8 @@
         <div class="flex-grow text-left text-sm px-3">
             {#if albumAddState === AlbumAddState.ALL}
                 <span class="italic">All Items Added</span>
+            {:else if albumAddState === AlbumAddState.PARTIAL}
+                Add <span class="font-bold px-1">{remainingAddCount}</span> more {remainingAddCount === 1 ? 'item' : 'items'}
             {:else}
                 Add <span class="font-bold px-1">{remainingAddCount}</span> {remainingAddCount === 1 ? 'item' : 'items'}
             {/if}
