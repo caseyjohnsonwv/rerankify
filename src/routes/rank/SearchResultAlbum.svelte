@@ -18,13 +18,14 @@
         else return AlbumAddState.PARTIAL;
     }
     
+    const trackListStore = globalTrackManager.trackListStore;
     const albumCountTrackStore = globalTrackManager.albumTrackCountStore;
     $: albumTrackCount = $albumCountTrackStore.get(albumProps.id) ?? 0;
     $: albumAddState = determineAlbumAddState(albumTrackCount, albumProps.trackCount);
     $: remainingAddCount = albumProps.trackCount - albumTrackCount;
 
 
-    const handleAddToTrackManager = async (album: AlbumModel) => {
+    const handleTrackManagerAction = async (album: AlbumModel) => {
         if (albumAddState !== AlbumAddState.ALL) {
             const res = await fetch(backendRoutes.tracksByAlbumId, {
                 method: 'POST',
@@ -33,6 +34,7 @@
             const trackListResults = await res.json() as TracksByAlbumIdResult;
             trackListResults.trackList.forEach((track) => globalTrackManager.addTrack(track));
         }
+        else $trackListStore.forEach((track) => globalTrackManager.removeTrackById(track.id));
     }
 </script>
 
@@ -48,7 +50,7 @@
         <span class="text-xs">{albumProps.releaseYear}</span>
         <span class="text-sm font-medium">{albumProps.type.toLocaleUpperCase()}</span>
     </div>
-    <button on:click={() => handleAddToTrackManager(albumProps)} class="col-span-2 p-2 rounded-lg flex flex-row items-center justify-end space-x-4 bg-stone-200 hover:bg-stone-300">
+    <button on:click={() => handleTrackManagerAction(albumProps)} class="col-span-2 p-2 rounded-lg flex flex-row items-center justify-end space-x-4 bg-stone-200 hover:bg-stone-300">
         <div class="flex-grow text-left text-sm px-3">
             {#if albumAddState === AlbumAddState.ALL}
                 <span class="italic">All Items Added</span>

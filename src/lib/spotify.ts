@@ -26,18 +26,18 @@ export class SpotifyWrapper {
         const tracks = await Promise.all(trackPromises);
         const trackList = tracks.map((track) => {
             const trackModel = this.convertTrackToTrackModel(track);
-            return {...trackModel, albumId: albumId}
+            return trackModel
         })
         return {trackList: trackList}
     }
 
-    // private converter methods    
+    // private converter methods
 
     private convertTrackToTrackModel(track: Track): TrackModel {
         return {
             id: track.id,
             name: track.name,
-            albumId: track.album?.id,
+            albumId: track.album.id,
             artistNames: track.artists.map((artist) => artist.name),
             coverArtUrl: track.album?.images.at(0)?.url,
             duration: Math.ceil(track.duration_ms / 1000),

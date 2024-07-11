@@ -26,7 +26,8 @@ export class TrackManager {
             });
             if (track.albumId) {
                 this.albumTrackCountStore.update((m) => {
-                    m.set(track.albumId as string, (m.get(track.albumId as string) ?? 0) + 1)
+                    const newValue = (m.get(track.albumId as string) ?? 0) + 1;
+                    m.set(track.albumId as string, newValue);
                     return m;
                 })
             }
@@ -38,16 +39,16 @@ export class TrackManager {
             this.globalAudio?.pause();
         };
         const removedTrack = get(this.trackListStore).filter((track) => track.id === id).at(0);
-        this.trackListStore.update((trackList) => {
-            return trackList.filter((track) => track.id !== id);
-        })
         if (removedTrack?.albumId) {
             this.albumTrackCountStore.update((m) => {
-                const newValue = Math.max(0, m.get(removedTrack.albumId as string) ?? 0 - 1);
+                const newValue = Math.max(0, (m.get(removedTrack.albumId as string) ?? 0) - 1);
                 m.set(removedTrack.albumId as string, newValue);
                 return m;
             })
         }
+        this.trackListStore.update((trackList) => {
+            return trackList.filter((track) => track.id !== id);
+        })
     }
 
 
