@@ -29,7 +29,7 @@
                 <span class="font-semibold">{$currentTrackStore?.name}</span> | {$currentTrackStore?.artistNames.at(0)}
             </span>
             <button on:click={handleStopPlayback} class="h-10 flex flex-row items-center">
-                <i class="fa-solid fa-circle-stop text-2xl hover:text-purple-700"></i>
+                <i class="fa-solid fa-circle-stop text-2xl hover:text-stone-600"></i>
             </button>
             <i class="fa-solid fa-volume-high text-xxs animate-pulse text-stone-400"></i>
         </div>

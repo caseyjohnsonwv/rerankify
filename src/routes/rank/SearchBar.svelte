@@ -4,6 +4,8 @@
     import { backendRoutes } from "$lib/routes";
     import SearchResultTrack from "./SearchResultTrack.svelte";
     import SearchResultAlbum from "./SearchResultAlbum.svelte";
+    import { fade } from "svelte/transition";
+    import { onMount } from "svelte";
 
 
     export let globalTrackManager: TrackManager;
@@ -20,6 +22,7 @@
     }
 
     
+    let inputElement: HTMLInputElement;
     let searchString: string = "";
     let albumSearchResults = [] as AlbumModel[];
     let trackSearchResults = [] as TrackModel[];
@@ -44,13 +47,29 @@
         albumSearchResults = searchResult?.albums ?? [];
         trackSearchResults = searchResult?.tracks ?? [];
     }
+
+    const handleClearSearchInput = async () => {
+        searchString = "";
+        inputElement.focus();
+    }
+
+    onMount(() => {
+        if (albumSearchResults.length + trackSearchResults.length === 0) inputElement.focus();
+    })
 </script>
 
-<div class="flex flex-row justify-center space-x-4">
-    <input on:keydown={handleKeydown} bind:value={searchString}
+<div class="flex flex-row justify-center">
+    <input on:keydown={handleKeydown} bind:value={searchString} bind:this={inputElement}
         type="text" placeholder="Start typing here to search Spotify ..." autocomplete="off" spellcheck="false"
-        class="w-2/3 py-2 px-4 rounded-full outline-none ring-2 ring-stone-500"
+        class="w-2/3 mx-4 py-2 px-4 rounded-full outline-none ring-2 ring-stone-500"
     />
+    {#if searchString.length > 0}
+        <button on:click={() => handleClearSearchInput()}
+            class="-translate-x-11 w-0 flex flex-row items-center" transition:fade={{duration: 100}}
+            >
+            <i class="fa-solid fa-x text-sm hover:text-stone-600"></i>
+        </button>
+    {/if}
     <div class="flex flex-row justify-center text-sm">
         <button on:click={() => setSearchResultsType(SearchResultsType.ALBUMS)} class="py-2 px-4 rounded-l-lg
             {searchResultsType === SearchResultsType.ALBUMS ? 'bg-purple-700 text-stone-100' : 'bg-stone-200 hover:bg-stone-300'}
