@@ -20,8 +20,6 @@
         <span class="flex-grow text-xs line-clamp-1">
             {#if $currentTrackStore}
                 <span class="font-semibold">{$currentTrackStore?.name}</span> | {$currentTrackStore?.artistNames.at(0)}
-            {:else}
-                <span class="italic font-light">No song currently playing ...</span>
             {/if}
         </span>
         {#if $currentTrackStore}

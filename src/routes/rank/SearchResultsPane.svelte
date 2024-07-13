@@ -11,7 +11,7 @@
     $: trackSearchResults = $searchResultStore?.tracks ?? [];
 </script>
 
-<div class="bg-stone-300 p-3 space-y-3 rounded-lg rounded-tl-none max-h-[32rem]
+<div class="bg-stone-300 bg-opacity-50 p-3 space-y-3 rounded-lg rounded-tl-none max-h-[32rem]
     overflow-y-scroll scrollbar scrollbar-w-2 scrollbar-thumb-rounded-full scrollbar-thumb-stone-500
     ">
     {#if searchResultType === SearchResultType.TRACKS}

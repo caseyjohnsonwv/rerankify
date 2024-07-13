@@ -67,45 +67,45 @@ export class TrackManager {
     // handlers for drag-and-drop functionality
 
 
-    handleDragStart(event: DragEvent, id: string) {
-        event.dataTransfer!.effectAllowed = 'move';
-        this.trackListStore.update((trackList) => {
-            return trackList.map((track) => track.id === id
-                ? {...track, isDragging: true}
-                : {...track, isDragging: false}
-            )
-        })
-    }
+    // handleDragStart(event: DragEvent, id: string) {
+    //     event.dataTransfer!.effectAllowed = 'move';
+    //     this.trackListStore.update((trackList) => {
+    //         return trackList.map((track) => track.id === id
+    //             ? {...track, isDragging: true}
+    //             : {...track, isDragging: false}
+    //         )
+    //     })
+    // }
 
-    handleDragOver(event: DragEvent) {
-        event.preventDefault();
-        event.dataTransfer!.dropEffect = 'move';
-    }
+    // handleDragOver(event: DragEvent) {
+    //     event.preventDefault();
+    //     event.dataTransfer!.dropEffect = 'move';
+    // }
 
-    handleDrop(event: DragEvent, id: string) {
-        this.trackListStore.update((trackList) => {
-            const droppedItemIndex = trackList.findIndex((track) => track.id === id);
-            const draggedItemIndex = trackList.findIndex((track) => track.isDragging === true);
-            const draggedItem = trackList.find((track) => track.isDragging === true) as TrackModel;
+    // handleDrop(event: DragEvent, id: string) {
+    //     this.trackListStore.update((trackList) => {
+    //         const droppedItemIndex = trackList.findIndex((track) => track.id === id);
+    //         const draggedItemIndex = trackList.findIndex((track) => track.isDragging === true);
+    //         const draggedItem = trackList.find((track) => track.isDragging === true) as TrackModel;
 
-            if (draggedItemIndex !== droppedItemIndex) {
-                let updatedTrackList = [...trackList];
-                updatedTrackList.splice(draggedItemIndex, 1);
-                updatedTrackList.splice(droppedItemIndex, 0, draggedItem);
-                return updatedTrackList;
-            }
-            else return [...trackList];
-        });
-    }
+    //         if (draggedItemIndex !== droppedItemIndex) {
+    //             let updatedTrackList = [...trackList];
+    //             updatedTrackList.splice(draggedItemIndex, 1);
+    //             updatedTrackList.splice(droppedItemIndex, 0, draggedItem);
+    //             return updatedTrackList;
+    //         }
+    //         else return [...trackList];
+    //     });
+    // }
 
-    handleDragEnd(event: DragEvent) {
-        this.trackListStore.update(trackList => trackList.map((track) => {
-            return {
-                ...track,
-                isDragging: false,
-            }
-        }));
-    }
+    // handleDragEnd(event: DragEvent) {
+    //     this.trackListStore.update(trackList => trackList.map((track) => {
+    //         return {
+    //             ...track,
+    //             isDragging: false,
+    //         }
+    //     }));
+    // }
 
 
     // internal functions
