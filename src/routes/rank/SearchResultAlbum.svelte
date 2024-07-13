@@ -42,7 +42,7 @@
     }
 </script>
 
-<div class="max-h-14 grid grid-cols-8 items-center my-1 py-1 px-4 border-s-2 text-stone-800 border-stone-500 bg-stone-100 hover:bg-purple-100 hover:cursor-pointer">
+<div class="max-h-14 grid grid-cols-8 items-center py-1 px-4 border-s-2 text-stone-800 border-stone-500 bg-stone-100 hover:bg-purple-100 hover:cursor-pointer">
     <div class="col-span-3 flex flex-row items-center space-x-2">
         <img src={albumProps.coverArtUrl} alt="" class="h-10 rounded-sm"/>
         <div class="subgrid grid-rows-2">

@@ -18,10 +18,10 @@
 
     onMount(() => {
         globalTrackManager.toggleTrackPlayback($currentTrackStore as TrackModel);
-    })
+    });
 </script>
 
-<div class="h-screen w-screen flex flex-col overflow-y-hidden">
+<div class="h-screen w-screen flex flex-col overflow-hidden">
     <Header userProps={data}/>
     <div class="flex-grow grid grid-cols-4">
         <div class="col-span-1">

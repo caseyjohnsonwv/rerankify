@@ -11,7 +11,7 @@ export class SpotifyWrapper {
     // exposed methods
 
     async search(query: string): Promise<SearchResult> {
-        const res = await CLIENT.search(query, ['album', 'track'], undefined, 10);
+        const res = await CLIENT.search(query, ['album', 'track'], undefined, 20);
         const albums = res.albums.items.map((album) => this.convertAlbumToAlbumModel(album)) ?? [];
         const tracks = res.tracks.items.map((track) => this.convertTrackToTrackModel(track)) ?? [];
         return {

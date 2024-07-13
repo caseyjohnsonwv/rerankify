@@ -26,7 +26,7 @@
         </span>
         {#if $currentTrackStore}
             <button on:click={handleStopPlayback} class="h-10 flex flex-row items-center">
-                <i class="fa-solid fa-circle-xmark text-xl hover:text-stone-600"></i>
+                <i class="fa-solid fa-circle-stop text-xl hover:text-stone-600"></i>
             </button>
         {/if}
     </div>

@@ -13,15 +13,13 @@
         <SearchBar/>
         <NowPlayingWidget {globalTrackManager}/>
     </div>
-    <div class="flex flex-row justify-center space-x-1 text-center text-sm">
-        <span class="underline underline-offset-8 text-base font-light">Imported Tracks</span>
-        {#if trackCount > 0}
-            <span>({trackCount})</span>
-        {/if}
-    </div>
-    <div class="flex-grow overflow-x-hidden overflow-y-scroll space-y-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-purple-700 scrollbar-thumb-rounded-full">
-        {#each $trackListStore as trackProps}
-            <div>{trackProps.name}</div>
-        {/each}
-    </div>
+    {#if $trackListStore.length > 0}
+        <div class="flex-grow overflow-x-hidden overflow-y-scroll space-y-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-purple-700 scrollbar-thumb-rounded-full">
+            {#each $trackListStore as trackProps}
+                <div>{trackProps.name}</div>
+            {/each}
+        </div>
+    {:else}
+        <span class="text-xs text-center italic">Search Spotify to get started!</span>
+    {/if}
 </div>

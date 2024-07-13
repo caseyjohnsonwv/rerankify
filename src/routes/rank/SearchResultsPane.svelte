@@ -11,7 +11,9 @@
     $: trackSearchResults = $searchResultStore?.tracks ?? [];
 </script>
 
-<div>
+<div class="bg-stone-300 p-3 space-y-3 rounded-lg rounded-tl-none max-h-[32rem]
+    overflow-y-scroll scrollbar scrollbar-w-2 scrollbar-thumb-rounded-full scrollbar-thumb-stone-500
+    ">
     {#if searchResultType === SearchResultType.TRACKS}
         {#each trackSearchResults as trackProps}
             <SearchResultTrack {globalTrackManager} {trackProps}/>
@@ -21,4 +23,7 @@
             <SearchResultAlbum {globalTrackManager} {albumProps}/>
         {/each}
     {/if}
+    <div class="text-center">
+        <span class="text-xs italic font-light">Don't see what you're looking for? Try changing your search query! </span>
+    </div>
 </div>
