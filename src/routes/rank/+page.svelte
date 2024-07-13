@@ -1,8 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import type { Session } from "@auth/sveltekit";
-    import { DraggingManager } from '$lib/draggingManager';
-    import { globalTrackManager, TrackManager } from "$lib/trackManager";
+    import { globalTrackManager } from "$lib/trackManager";
     import type { TrackModel } from "$lib/models";
     import { searchResultStore } from '$lib/searchResult';
     import Header from "./Header.svelte";

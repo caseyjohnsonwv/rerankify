@@ -2,7 +2,6 @@
     import SearchResultTrack from "./SearchResultTrack.svelte";
     import SearchResultAlbum from "./SearchResultAlbum.svelte";
     import { searchResultStore, SearchResultType, searchResultTypeStore } from "$lib/searchResult";
-    import { globalTrackManager } from "$lib/trackManager";
 
     $: searchResultType = $searchResultTypeStore as SearchResultType;
     $: albumSearchResults = $searchResultStore?.albums ?? [];

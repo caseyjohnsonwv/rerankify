@@ -1,9 +1,8 @@
 <script lang="ts">
     import type { TrackModel } from "$lib/models";
-    import type { TrackManager } from "$lib/trackManager";
+    import { globalTrackManager } from "$lib/trackManager";
     import { fade } from "svelte/transition";
 
-    export let globalTrackManager: TrackManager;
     const currentTrackStore = globalTrackManager.currentTrackStore;
 
     const handleStopPlayback = async () => {

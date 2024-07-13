@@ -25,7 +25,7 @@
 <div class="h-full flex flex-col space-y-4 py-2 px-4 bg-stone-100 text-stone-800 border-r border-r-stone-500">
     <div class="py-4 space-y-6 border-b border-b-stone-500">
         <SearchBar/>
-        <NowPlayingWidget {globalTrackManager}/>
+        <NowPlayingWidget/>
     </div>
     <div id="top-of-track-bin"
         class="bg-stone-300 p-2 flex-grow space-y-2 rounded-md overflow-x-hidden text-center
