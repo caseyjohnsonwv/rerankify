@@ -22,7 +22,7 @@
 </script>
 
 <div class="h-screen w-screen flex flex-col overflow-y-hidden">
-    <Header userProps={data} {globalTrackManager}/>
+    <Header userProps={data}/>
     <div class="flex-grow grid grid-cols-4">
         <div class="col-span-1">
             <TrackBin {globalTrackManager}/>

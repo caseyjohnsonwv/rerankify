@@ -11,7 +11,7 @@
     $: trackSearchResults = $searchResultStore?.tracks ?? [];
 </script>
 
-<div class="overflow-x-hidden overflow-y-scroll scrollbar-none">
+<div>
     {#if searchResultType === SearchResultType.TRACKS}
         {#each trackSearchResults as trackProps}
             <SearchResultTrack {globalTrackManager} {trackProps}/>

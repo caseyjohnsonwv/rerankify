@@ -1,16 +1,17 @@
 <script lang="ts">
     import type { TrackManager } from "$lib/trackManager";
     import SearchBar from "./SearchBar.svelte";
+    import NowPlayingWidget from "./NowPlayingWidget.svelte";
 
     export let globalTrackManager: TrackManager;
     const trackListStore = globalTrackManager.trackListStore;
     $: trackCount = $trackListStore.length;
 </script>
 
-<div class="h-full flex flex-col space-y-4 px-4 bg-stone-100 text-stone-800 border-r border-r-stone-500">
-    <div class="py-6 flex flex-col space-y-6 border-b border-b-stone-500">
-        <span class="text-sm text-center">Playlist Name Placeholder</span>
+<div class="h-full flex flex-col space-y-4 py-2 px-4 bg-stone-100 text-stone-800 border-r border-r-stone-500">
+    <div class="py-4 space-y-6 border-y border-b-stone-500">
         <SearchBar/>
+        <NowPlayingWidget {globalTrackManager}/>
     </div>
     <div class="flex flex-row justify-center space-x-1 text-center text-sm">
         <span class="underline underline-offset-8 text-base font-light">Imported Tracks</span>
