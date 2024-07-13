@@ -19,7 +19,7 @@
     }
 </script>
 
-<nav class="grid grid-cols-4 items-center px-8 max-h-12 bg-purple-700 text-slate-50">
+<nav class="grid grid-cols-4 items-center px-8 max-h-12 bg-purple-700 text-slate-50 border-b border-b-stone-500">
     {#if $currentTrackStore}
         <div class="col-span-1 pl-1 pr-3 py-1 max-h-10 flex flex-row items-center space-x-2 bg-stone-100 rounded-full text-stone-800" transition:fade={{duration: 100}}>
             {#if $currentTrackStore?.coverArtUrl}

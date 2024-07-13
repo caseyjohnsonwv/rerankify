@@ -24,22 +24,26 @@
     $: albumAddState = determineAlbumAddState(albumTrackCount, albumProps.trackCount);
     $: remainingAddCount = albumProps.trackCount - albumTrackCount;
 
+    // for loading animation while adding entire album
+    let isAdding: boolean = false;
 
     const handleTrackManagerAction = async (album: AlbumModel) => {
         if (albumAddState !== AlbumAddState.ALL) {
+            isAdding = true;
             const res = await fetch(backendRoutes.tracksByAlbumId, {
                 method: 'POST',
                 body: JSON.stringify({ albumId: album.id }),
             });
             const trackListResults = await res.json() as TracksByAlbumIdResult;
             trackListResults.trackList.forEach((track) => globalTrackManager.addTrack(track));
+            isAdding = false;
         }
         else $trackListStore.forEach((track) => globalTrackManager.removeTrackById(track.id));
     }
 </script>
 
 <div class="max-h-14 grid grid-cols-8 items-center my-1 py-1 px-4 border-s-2 text-stone-800 border-stone-500 bg-stone-100 hover:bg-purple-100 hover:cursor-pointer">
-    <div class="col-span-4 flex flex-row items-center space-x-2">
+    <div class="col-span-3 flex flex-row items-center space-x-2">
         <img src={albumProps.coverArtUrl} alt="" class="h-10 rounded-sm"/>
         <div class="subgrid grid-rows-2">
             <span class="font-semibold line-clamp-1">{albumProps.name}</span>
@@ -50,7 +54,10 @@
         <span class="text-xs">{albumProps.releaseYear}</span>
         <span class="text-sm font-medium">{albumProps.type.toLocaleUpperCase()}</span>
     </div>
-    <button on:click={() => handleTrackManagerAction(albumProps)} class="col-span-2 p-2 rounded-lg flex flex-row items-center justify-end space-x-4 bg-stone-200 hover:bg-stone-300">
+    <button on:click={() => handleTrackManagerAction(albumProps)}
+        class="col-span-3 p-2 rounded-lg flex flex-row items-center justify-end space-x-4 bg-stone-200 hover:bg-stone-300
+        {isAdding ? 'animate-pulse' : ''}
+        ">
         <div class="flex-grow text-left text-sm px-3">
             {#if albumAddState === AlbumAddState.ALL}
                 <span class="italic">All Items Added</span>
