@@ -8,7 +8,6 @@ export interface TrackModel {
     previewURL?: string;
     isPreview?: boolean;
     isPlaying?: boolean;
-    isDragging?: boolean;
 }
 
 export interface AlbumModel {

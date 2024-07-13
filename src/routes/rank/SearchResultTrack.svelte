@@ -1,8 +1,7 @@
 <script lang="ts">
     import type { TrackModel } from "$lib/models";
-    import type { TrackManager } from "$lib/trackManager";
+    import { globalTrackManager } from "$lib/trackManager";
 
-    export let globalTrackManager: TrackManager;
     export let trackProps: TrackModel;
 
     const currentTrackStore = globalTrackManager.currentTrackStore;

@@ -1,39 +1,70 @@
 <script lang="ts">
+    import { globalDraggingManager } from "$lib/draggingManager";
     import type { TrackModel } from "$lib/models";
-    import type { TrackManager } from "$lib/trackManager";
+    import { globalTrackManager } from "$lib/trackManager";
+    import { writable } from "svelte/store";
 
-    export let globalTrackManager: TrackManager;
     export let props: TrackModel;
 
+    const isDraggingStore = writable<boolean>(false);
     const currentTrackStore = globalTrackManager.currentTrackStore;
 
     const handlePlayToggle = async (track: TrackModel) => {
         globalTrackManager.toggleTrackPlayback(track);
     }
 
-    // on:dragstart={(e) => globalTrackManager.handleDragStart(e, props.id)}
-    // on:dragover={(e) => globalTrackManager.handleDragOver(e)}
-    // on:dragend={(e) => globalTrackManager.handleDragEnd(e)}
-    // on:drop={(e) => globalTrackManager.handleDrop(e, props.id)}
+
+    let rootElement: HTMLElement;
+    globalDraggingManager.triggeredElementStore.subscribe((element) => {
+        if (globalDraggingManager.getDraggedElement()?.id === rootElement?.id) {
+            switch (element?.id) {
+                case ('track-disposal-element'): {
+                    globalTrackManager.removeTrackById(props.id);
+                    globalDraggingManager.setDraggedElement(undefined);
+                    break;
+                }
+            }
+        }
+    })
+
+    const handleDragStart = async (event: DragEvent) => {
+        globalDraggingManager.setDraggedElement(rootElement);
+        isDraggingStore.set(true);
+    }
+
+    const handleDragOver = async (event: DragEvent) => {
+        event.preventDefault();
+    }
+
+    const handleDragEnd = async (event: DragEvent) => {
+        globalDraggingManager.checkForInteractionTrigger(event);
+        globalDraggingManager.setDraggedElement(undefined);
+        isDraggingStore.set(false);
+    }
 </script>
 
-<li draggable="true" class="list-none">
-    <div class="w-full max-h-10 grid grid-cols-5 items-center py-1 pl-2 pr-3 text-left rounded-sm bg-stone-200 text-stone-800
-        {props.isDragging ? 'cursor-grabbing' : 'cursor-grab'}"
+<li draggable="true" id="{props.id}" bind:this={rootElement}
+    class="list-none {$isDraggingStore ? 'opacity-60' : 'opacity-100'}"
+    on:dragstart={handleDragStart}
+    on:dragover={handleDragOver}
+    on:dragend={handleDragEnd}
+    >
+    <div class="w-full max-h-10 grid grid-cols-8 items-center py-1 pl-2 pr-3 text-left rounded-sm bg-stone-200 text-stone-800
+        {$isDraggingStore ? 'cursor-grabbing' : 'cursor-grab'}"
         >
-        <div class="col-span-4 flex flex-row items-center space-x-2 pr-2">
+        <div class="col-span-7 flex flex-row items-center space-x-2 pr-2">
             <img src={props.coverArtUrl} alt="" class="h-8 rounded-sm"/>
             <div class="subgrid grid-rows-2">
                 <span class="font-semibold text-xs line-clamp-1">{props.name}</span>
                 <span class="text-xxs line-clamp-1">{props.artistNames?.at(0)}</span>
             </div>
         </div>
-        <div class="col-span-1 flex flex-row items-center w-full justify-end space-x-2">
+        <div class="col-span-1 flex flex-row items-center w-full justify-center space-x-2">
             <button on:click={() => handlePlayToggle(props)} on:keydown={(e) => {if(e.keyCode === 32) e.preventDefault()}}
                 class="flex flex-row items-center text-2xl"
                 >
                 {#if props.id === $currentTrackStore?.id}
-                    <i class="fa-solid fa-circle-stop hover:text-stone-600"></i>
+                    <i class="fa-solid fa-volume-up text-xs text-stone-600 animate-pulse"></i>
                 {:else}
                     <i class="fa-solid fa-circle-play hover:text-purple-700"></i>
                 {/if}

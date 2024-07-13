@@ -2,9 +2,7 @@
     import SearchResultTrack from "./SearchResultTrack.svelte";
     import SearchResultAlbum from "./SearchResultAlbum.svelte";
     import { searchResultStore, SearchResultType, searchResultTypeStore } from "$lib/searchResult";
-    import type { TrackManager } from "$lib/trackManager";
-
-    export let globalTrackManager: TrackManager;    
+    import { globalTrackManager } from "$lib/trackManager";
 
     $: searchResultType = $searchResultTypeStore as SearchResultType;
     $: albumSearchResults = $searchResultStore?.albums ?? [];
@@ -16,11 +14,11 @@
     ">
     {#if searchResultType === SearchResultType.TRACKS}
         {#each trackSearchResults as trackProps}
-            <SearchResultTrack {globalTrackManager} {trackProps}/>
+            <SearchResultTrack {trackProps}/>
         {/each}
     {:else if searchResultType === SearchResultType.ALBUMS}
         {#each albumSearchResults as albumProps}
-            <SearchResultAlbum {globalTrackManager} {albumProps}/>
+            <SearchResultAlbum {albumProps}/>
         {/each}
     {/if}
     <div class="text-center">

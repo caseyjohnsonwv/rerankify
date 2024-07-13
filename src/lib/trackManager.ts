@@ -1,4 +1,4 @@
-import { type AlbumModel, type TrackModel } from "./models";
+import { type TrackModel } from "./models";
 import { writable, get, type Writable } from "svelte/store";
 
 export class TrackManager {
@@ -51,6 +51,12 @@ export class TrackManager {
         })
     }
 
+    removeAllTracks() {
+        this.globalAudio?.pause();
+        this.albumTrackCountStore.set(new Map());
+        this.trackListStore.set([]);
+    }
+
 
     // handlers for single audio global playback
 
@@ -62,50 +68,6 @@ export class TrackManager {
             this.initAudio(track);
         }
     }
-
-
-    // handlers for drag-and-drop functionality
-
-
-    // handleDragStart(event: DragEvent, id: string) {
-    //     event.dataTransfer!.effectAllowed = 'move';
-    //     this.trackListStore.update((trackList) => {
-    //         return trackList.map((track) => track.id === id
-    //             ? {...track, isDragging: true}
-    //             : {...track, isDragging: false}
-    //         )
-    //     })
-    // }
-
-    // handleDragOver(event: DragEvent) {
-    //     event.preventDefault();
-    //     event.dataTransfer!.dropEffect = 'move';
-    // }
-
-    // handleDrop(event: DragEvent, id: string) {
-    //     this.trackListStore.update((trackList) => {
-    //         const droppedItemIndex = trackList.findIndex((track) => track.id === id);
-    //         const draggedItemIndex = trackList.findIndex((track) => track.isDragging === true);
-    //         const draggedItem = trackList.find((track) => track.isDragging === true) as TrackModel;
-
-    //         if (draggedItemIndex !== droppedItemIndex) {
-    //             let updatedTrackList = [...trackList];
-    //             updatedTrackList.splice(draggedItemIndex, 1);
-    //             updatedTrackList.splice(droppedItemIndex, 0, draggedItem);
-    //             return updatedTrackList;
-    //         }
-    //         else return [...trackList];
-    //     });
-    // }
-
-    // handleDragEnd(event: DragEvent) {
-    //     this.trackListStore.update(trackList => trackList.map((track) => {
-    //         return {
-    //             ...track,
-    //             isDragging: false,
-    //         }
-    //     }));
-    // }
 
 
     // internal functions
@@ -126,3 +88,6 @@ export class TrackManager {
         this.globalAudio.play();
     }
 }
+
+
+export const globalTrackManager = new TrackManager([]);

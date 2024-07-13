@@ -1,9 +1,8 @@
 <script lang="ts">
     import type { AlbumModel, TracksByAlbumIdResult } from "$lib/models";
-    import type { TrackManager } from "$lib/trackManager";
+    import { globalTrackManager } from "$lib/trackManager";
     import { backendRoutes } from "$lib/routes";
 
-    export let globalTrackManager: TrackManager;
     export let albumProps: AlbumModel;
 
     const enum AlbumAddState {

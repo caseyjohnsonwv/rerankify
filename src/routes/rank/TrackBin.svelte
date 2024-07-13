@@ -1,25 +1,24 @@
 <script lang="ts">
-    import type { TrackManager } from "$lib/trackManager";
+    import { globalTrackManager } from "$lib/trackManager";
     import SearchBar from "./SearchBar.svelte";
     import NowPlayingWidget from "./NowPlayingWidget.svelte";
     import DraggableTrack from "./TrackCard.svelte";
     import { onMount } from "svelte";
+    import TrackDisposal from "./TrackDisposal.svelte";
 
-    export let globalTrackManager: TrackManager;
     const trackListStore = globalTrackManager.trackListStore;
 
     let remainingHeight = 0;
 
     const updateHeight = () => {
         const trackBinTop = (document.querySelector('#top-of-track-bin') as HTMLElement).offsetHeight;
-        const trackBinBottom = (document.querySelector('#bottom-of-track-bin') as HTMLElement).offsetHeight;
+        const trackBinBottom = (document.querySelector('#track-disposal-element') as HTMLElement).offsetHeight;
         remainingHeight = window.innerHeight - trackBinTop + trackBinBottom;
     }
     
     onMount(() => {
         updateHeight();
         window.addEventListener('resize', updateHeight);
-        return () => window.removeEventListener('resize', updateHeight);
     });
 </script>
 
@@ -35,16 +34,11 @@
         >
         {#if $trackListStore.length > 0}
             {#each $trackListStore as trackProps}
-                <DraggableTrack props={trackProps} {globalTrackManager}/>
+                <DraggableTrack props={trackProps}/>
             {/each}
         {:else}
             <span class="text-xs italic">Search Spotify to get started!</span>
         {/if}
     </div>
-    <div id="bottom-of-track-bin"
-        class="flex flex-row justify-center items-center p-2 rounded-lg text-sm
-        bg-stone-300 hover:bg-stone-400 text-stone-700 hover:text-red-600"
-        >
-        <i class="fa-solid fa-trash"></i>
-    </div>
+    <TrackDisposal/>
 </div>

@@ -1,7 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import type { Session } from "@auth/sveltekit";
-    import { TrackManager } from "$lib/trackManager";
+    import { DraggingManager } from '$lib/draggingManager';
+    import { globalTrackManager, TrackManager } from "$lib/trackManager";
     import type { TrackModel } from "$lib/models";
     import { searchResultStore } from '$lib/searchResult';
     import Header from "./Header.svelte";
@@ -11,7 +12,6 @@
     // passed from +layout.server.ts via +layout.svelte on page load
     export let data: Session;
 
-    const globalTrackManager = new TrackManager([]);
     const currentTrackStore = globalTrackManager.currentTrackStore;
 
     $: displaySearch = ($searchResultStore?.albums.length ?? 0) + ($searchResultStore?.tracks.length ?? 0) > 0;
@@ -25,12 +25,12 @@
     <Header userProps={data}/>
     <div class="flex-grow grid grid-cols-4">
         <div class="col-span-1">
-            <TrackBin {globalTrackManager}/>
+            <TrackBin/>
         </div>
         <div class="col-span-3 flex relative z-0">
             {#if displaySearch}
                 <div class="absolute inset-2 z-10 w-5/6">
-                    <SearchResultsPane {globalTrackManager}/>
+                    <SearchResultsPane/>
                 </div>
             {/if}
             <div class="w-full">
