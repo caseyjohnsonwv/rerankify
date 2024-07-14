@@ -22,11 +22,11 @@
 
 <div class="w-dvh h-dvh flex flex-col overflow-hidden">
     <Header userProps={data}/>
-    <div class="flex-grow grid grid-cols-4">
-        <div class="col-span-1">
+    <div class="flex-grow flex flex-row">
+        <div class="w-96">
             <TrackBin/>
         </div>
-        <div class="col-span-3 flex relative z-0">
+        <div class="flex flex-row flex-grow relative z-0">
             {#if displaySearch}
                 <div class="absolute inset-2 z-10 w-5/6">
                     <SearchResultsPane/>
