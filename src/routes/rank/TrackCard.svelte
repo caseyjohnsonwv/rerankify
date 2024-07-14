@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { globalDraggingManager } from "$lib/draggingManager";
     import type { TrackModel } from "$lib/models";
+    import { globalDraggingManager, TriggerableElements } from "$lib/draggingManager";
     import { globalTrackManager } from "$lib/trackManager";
     import { writable } from "svelte/store";
 
@@ -18,8 +18,16 @@
     globalDraggingManager.triggeredElementStore.subscribe((element) => {
         if (globalDraggingManager.getDraggedElement()?.id === rootElement?.id) {
             switch (element?.id) {
-                case ('track-disposal-element'): {
+                case (TriggerableElements.TRACK_DISPOSAL_ELEMENT): {
                     globalTrackManager.removeTrackById(props.id);
+                    globalDraggingManager.setDraggedElement(undefined);
+                    break;
+                }
+                case (TriggerableElements.NOW_PLAYING_ELEMENT): {
+                    if ($currentTrackStore?.id !== props.id) {
+                        globalTrackManager.stopPlayback();
+                        globalTrackManager.toggleTrackPlayback(props);
+                    }
                     globalDraggingManager.setDraggedElement(undefined);
                     break;
                 }
@@ -61,10 +69,10 @@
         </div>
         <div class="col-span-1 flex flex-row items-center w-full justify-center space-x-2">
             <button on:click={() => handlePlayToggle(props)} on:keydown={(e) => {if(e.keyCode === 32) e.preventDefault()}}
-                class="flex flex-row items-center text-2xl"
+                class="flex flex-row items-center text-xl outline-none"
                 >
                 {#if props.id === $currentTrackStore?.id}
-                    <i class="fa-solid fa-volume-up text-xs text-stone-600 animate-pulse"></i>
+                    <i class="fa-solid fa-circle-stop text-stone-600 animate-pulse"></i>
                 {:else}
                     <i class="fa-solid fa-circle-play hover:text-purple-700"></i>
                 {/if}

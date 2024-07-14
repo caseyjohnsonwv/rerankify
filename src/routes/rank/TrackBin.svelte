@@ -1,5 +1,6 @@
 <script lang="ts">
     import { globalTrackManager } from "$lib/trackManager";
+    import { TriggerableElements } from "$lib/draggingManager";
     import SearchBar from "./SearchBar.svelte";
     import NowPlayingWidget from "./NowPlayingWidget.svelte";
     import DraggableTrack from "./TrackCard.svelte";
@@ -7,12 +8,13 @@
     import TrackDisposal from "./TrackDisposal.svelte";
 
     const trackListStore = globalTrackManager.trackListStore;
+    const trackRackId = 'track-rack';
 
     let remainingHeight = 0;
 
     const updateHeight = () => {
-        const trackBinTop = (document.querySelector('#top-of-track-bin') as HTMLElement).offsetHeight;
-        const trackBinBottom = (document.querySelector('#track-disposal-element') as HTMLElement).offsetHeight;
+        const trackBinTop = (document.querySelector(trackRackId) as HTMLElement).offsetHeight;
+        const trackBinBottom = (document.querySelector(TriggerableElements.TRACK_DISPOSAL_ELEMENT) as HTMLElement).offsetHeight;
         remainingHeight = window.innerHeight - trackBinTop + trackBinBottom;
     }
     
@@ -27,7 +29,7 @@
         <SearchBar/>
         <NowPlayingWidget/>
     </div>
-    <div id="top-of-track-bin"
+    <div id="{trackRackId}"
         class="bg-stone-300 p-2 flex-grow space-y-2 rounded-md overflow-x-hidden text-center
         overflow-y-scroll scrollbar scrollbar-w-1 scrollbar-thumb-rounded-full scrollbar-thumb-stone-500"
         style="height: {remainingHeight}"

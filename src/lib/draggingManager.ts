@@ -1,5 +1,12 @@
 import { writable, get, type Writable } from "svelte/store";
 
+
+export const enum TriggerableElements {
+    TRACK_DISPOSAL_ELEMENT = 'track-disposal-element',
+    NOW_PLAYING_ELEMENT = 'now-playing-element',
+}
+
+
 export class DraggingManager {
     registeredElementsStore: Writable<HTMLElement[]>;
     triggeredElementStore: Writable<HTMLElement | undefined>;

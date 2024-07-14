@@ -70,6 +70,12 @@ export class TrackManager {
     }
 
 
+    stopPlayback() {
+        this.globalAudio?.pause();
+        this.currentTrackStore.set(undefined);
+    }
+
+
     // internal functions
 
 

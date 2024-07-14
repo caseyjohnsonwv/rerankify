@@ -43,7 +43,7 @@
 <div class="space-y-2">
     <div class="flex flex-row justify-center">
         <input on:keydown={handleKeydown} bind:value={searchString} bind:this={inputElement}
-            type="text" placeholder="Search Spotify ..." autocomplete="off" spellcheck="false"
+            type="text" placeholder="Type to search Spotify..." autocomplete="off" spellcheck="false"
             class="py-2 px-4 w-full rounded-full outline-none ring-1 ring-stone-500 text-sm"
         />
         {#if searchString.length > 0}
