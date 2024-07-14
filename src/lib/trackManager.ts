@@ -1,5 +1,7 @@
+import { globalDraggingManager } from "./draggingManager";
 import { type TrackModel } from "./models";
 import { writable, get, type Writable } from "svelte/store";
+
 
 export class TrackManager {
     private globalAudio: HTMLAudioElement | undefined;
@@ -51,10 +53,49 @@ export class TrackManager {
         })
     }
 
-    removeAllTracks() {
+    removeAllNonCanvasTracks() {
         this.globalAudio?.pause();
-        this.albumTrackCountStore.set(new Map());
-        this.trackListStore.set([]);
+        this.trackListStore.update((trackList) => {
+            const newTrackList: TrackModel[] = [];
+            trackList.forEach((track) => {
+                if (track.canvasX && track.canvasY) {
+                    newTrackList.push(track)
+                }
+                else {
+                    this.albumTrackCountStore.update((m) => {
+                        const newValue = Math.max(0, (m.get(track.albumId as string) ?? 0) - 1);
+                        m.set(track.albumId as string, newValue);
+                        return m;
+                    })
+                }
+            })
+            return newTrackList;
+        })
+    }
+
+
+    // handlers for canvas
+
+
+    moveTrackToCanvasLocationById(id: string, event: DragEvent, dragOffset?: {x:number, y:number}): {x: number, y: number} {
+        let newX = Math.max(event.clientX - (dragOffset?.x ?? 0), globalDraggingManager.canvasMinX + 5);
+        let newY = Math.max(event.clientY - (dragOffset?.y ?? 0), globalDraggingManager.canvasMinY + 5);
+        this.trackListStore.update((trackList) => {
+            return trackList.map((track) => track.id === id
+                ? {...track, canvasX: newX, canvasY: newY}
+                : track
+            );
+        });
+        return {x: newX, y: newY};
+    }
+
+    removeTrackFromCanvasById(id: string) {
+        this.trackListStore.update((trackList) => {
+            return trackList.map((track) => track.id === id
+                ? {...track, canvasX: undefined, canvasY: undefined}
+                : track
+            );
+        });
     }
 
 

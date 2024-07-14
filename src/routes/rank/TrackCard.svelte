@@ -3,24 +3,27 @@
     import { globalDraggingManager, TriggerableElements } from "$lib/draggingManager";
     import { globalTrackManager } from "$lib/trackManager";
     import { writable } from "svelte/store";
+    import { onMount } from "svelte";
 
     export let props: TrackModel;
 
     const isDraggingStore = writable<boolean>(false);
     const currentTrackStore = globalTrackManager.currentTrackStore;
+    const trackListStore = globalTrackManager.trackListStore;
 
     const handlePlayToggle = async (track: TrackModel) => {
         globalTrackManager.toggleTrackPlayback(track);
     }
 
+    $: inCanvas = $trackListStore.find((track) => track.id === props.id)?.canvasX !== undefined;
 
     let rootElement: HTMLElement;
+    let dragOffset = {x: 0, y: 0};
     globalDraggingManager.triggeredElementStore.subscribe((element) => {
         if (globalDraggingManager.getDraggedElement()?.id === rootElement?.id) {
             switch (element?.id) {
                 case (TriggerableElements.TRACK_DISPOSAL_ELEMENT): {
                     globalTrackManager.removeTrackById(props.id);
-                    globalDraggingManager.setDraggedElement(undefined);
                     break;
                 }
                 case (TriggerableElements.NOW_PLAYING_ELEMENT): {
@@ -28,14 +31,36 @@
                         globalTrackManager.stopPlayback();
                         globalTrackManager.toggleTrackPlayback(props);
                     }
-                    globalDraggingManager.setDraggedElement(undefined);
+                    break;
+                }
+                case (TriggerableElements.CANVAS_ROOT_ELEMENT): {
+                    const dragEvent = globalDraggingManager.getDragEvent();
+                    if (dragEvent) {
+                        const newLocation = globalTrackManager.moveTrackToCanvasLocationById(props.id, dragEvent, dragOffset);
+                        setCardPosition(newLocation.x, newLocation.y)
+                    }
                     break;
                 }
             }
         }
     })
 
+    onMount(() => {
+        if (props.canvasX && props.canvasY) {
+            setCardPosition(props.canvasX, props.canvasY)
+        }
+    })
+
+    const setCardPosition = (x: number, y: number) => {
+        rootElement.style.position = 'absolute';
+        rootElement.style.left = `${x}px`;
+        rootElement.style.top = `${y}px`;
+    }
+
     const handleDragStart = async (event: DragEvent) => {
+        const rect = rootElement.getBoundingClientRect();
+        dragOffset.x = event.clientX - rect.left;
+        dragOffset.y = event.clientY - rect.top;
         globalDraggingManager.setDraggedElement(rootElement);
         isDraggingStore.set(true);
     }
@@ -46,13 +71,14 @@
 
     const handleDragEnd = async (event: DragEvent) => {
         globalDraggingManager.checkForInteractionTrigger(event);
-        globalDraggingManager.setDraggedElement(undefined);
         isDraggingStore.set(false);
     }
 </script>
 
 <li draggable="true" id="{props.id}" bind:this={rootElement}
-    class="list-none {$isDraggingStore ? 'opacity-60' : 'opacity-100'}"
+    class="list-none w-full max-w-72
+    {$isDraggingStore ? 'opacity-60' : 'opacity-100'}
+    {inCanvas ? 'ring-1 ring-stone-500 absolute' : 'relative'}"
     on:dragstart={handleDragStart}
     on:dragover={handleDragOver}
     on:dragend={handleDragEnd}
