@@ -29,8 +29,9 @@
 <div class="flex flex-col space-y-2 w-full">
     <span class="text-sm text-center">Now Playing:</span>
     <div id="{TriggerableElements.NOW_PLAYING_ELEMENT}" bind:this={nowPlayingElement}
-        class="w-full pl-1 pr-3 py-1 max-h-10 flex flex-row items-center space-x-2 bg-stone-200 ring-1 ring-stone-500 rounded-full text-stone-800
-        {$isDraggingOverStore ? 'cursor-grabbing' : 'cursor-defualt'}"
+        class="w-full pl-1 pr-3 py-1 max-h-10 flex flex-row items-center space-x-2 ring-1 ring-stone-500 rounded-full text-stone-800
+        {$isDraggingOverStore ? 'cursor-grabbing' : 'cursor-defualt'}
+        {$currentTrackStore ? 'bg-purple-300' : 'bg-stone-200'}"
         transition:fade={{duration: 100}}
         >
         <img src={$currentTrackStore?.coverArtUrl} alt="" class="h-8 rounded-full animate-spin-slow"/>

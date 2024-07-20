@@ -2,9 +2,10 @@ import { writable, get, type Writable } from "svelte/store";
 
 
 export const enum TriggerableElements {
-    TRACK_DISPOSAL_ELEMENT = 'track-disposal-element',
-    NOW_PLAYING_ELEMENT = 'now-playing-element',
     CANVAS_ROOT_ELEMENT = 'canvas-root-element',
+    NOW_PLAYING_ELEMENT = 'now-playing-element',
+    TRACK_DISPOSAL_ELEMENT = 'track-disposal-element',
+    TRACK_RACK_ELEMENT = 'track-rack-element',
 }
 
 

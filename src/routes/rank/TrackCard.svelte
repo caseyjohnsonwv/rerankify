@@ -16,14 +16,18 @@
     }
 
     $: inCanvas = $trackListStore.find((track) => track.id === props.id)?.canvasX !== undefined;
+    $: isPlaying = $currentTrackStore?.id === props.id;
 
     let rootElement: HTMLElement;
     let dragOffset = {x: 0, y: 0};
     globalDraggingManager.triggeredElementStore.subscribe((element) => {
         if (globalDraggingManager.getDraggedElement()?.id === rootElement?.id) {
             switch (element?.id) {
-                case (TriggerableElements.TRACK_DISPOSAL_ELEMENT): {
-                    globalTrackManager.removeTrackById(props.id);
+                case (TriggerableElements.CANVAS_ROOT_ELEMENT): {
+                    const dragEvent = globalDraggingManager.getDragEvent();
+                    if (dragEvent) {
+                        globalTrackManager.moveTrackToCanvasLocationById(props.id, dragEvent, dragOffset);
+                    }
                     break;
                 }
                 case (TriggerableElements.NOW_PLAYING_ELEMENT): {
@@ -33,11 +37,12 @@
                     }
                     break;
                 }
-                case (TriggerableElements.CANVAS_ROOT_ELEMENT): {
-                    const dragEvent = globalDraggingManager.getDragEvent();
-                    if (dragEvent) {
-                        globalTrackManager.moveTrackToCanvasLocationById(props.id, dragEvent, dragOffset);
-                    }
+                case (TriggerableElements.TRACK_DISPOSAL_ELEMENT): {
+                    globalTrackManager.removeTrackById(props.id);
+                    break;
+                }
+                case (TriggerableElements.TRACK_RACK_ELEMENT): {
+                    globalTrackManager.removeTrackFromCanvasById(props.id);
                     break;
                 }
             }
@@ -75,15 +80,16 @@
 </script>
 
 <li draggable="true" id="{props.id}" bind:this={rootElement}
-    class="list-none w-full max-w-72
+    class="list-none w-full max-w-72 rounded-sm
     {$isDraggingStore ? 'opacity-60' : 'opacity-100'}
     {inCanvas ? 'ring-1 ring-stone-500 absolute' : 'relative'}"
     on:dragstart={handleDragStart}
     on:dragover={handleDragOver}
     on:dragend={handleDragEnd}
     >
-    <div class="w-full max-h-10 grid grid-cols-8 items-center py-1 pl-2 pr-3 text-left rounded-sm bg-stone-200 text-stone-800
-        {$isDraggingStore ? 'cursor-grabbing' : 'cursor-grab'}"
+    <div class="w-full max-h-10 grid grid-cols-8 items-center py-1 pl-2 pr-3 text-left rounded-sm text-stone-800
+        {$isDraggingStore ? 'cursor-grabbing' : 'cursor-grab'}
+        {isPlaying ? 'bg-purple-300 animate-pulse' : 'bg-stone-200'}"
         >
         <div class="col-span-7 flex flex-row items-center space-x-2 pr-2">
             <img src={props.coverArtUrl} alt="" class="h-8 rounded-sm"/>
@@ -97,7 +103,7 @@
                 class="flex flex-row items-center text-xl outline-none"
                 >
                 {#if props.id === $currentTrackStore?.id}
-                    <i class="fa-solid fa-circle-stop text-stone-600 animate-pulse"></i>
+                    <i class="fa-solid fa-circle-stop text-stone-600"></i>
                 {:else}
                     <i class="fa-solid fa-circle-play hover:text-purple-700"></i>
                 {/if}

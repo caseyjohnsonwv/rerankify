@@ -1,6 +1,6 @@
 <script lang="ts">
     import { globalTrackManager } from "$lib/trackManager";
-    import { TriggerableElements } from "$lib/draggingManager";
+    import { globalDraggingManager, TriggerableElements } from "$lib/draggingManager";
     import SearchBar from "./SearchBar.svelte";
     import NowPlayingWidget from "./NowPlayingWidget.svelte";
     import TrackCard from "./TrackCard.svelte";
@@ -8,21 +8,30 @@
     import { onMount } from "svelte";
 
     const trackListStore = globalTrackManager.trackListStore;
-    const trackRackId = 'track-rack';
 
     $: tracksNotInCanvas = $trackListStore.filter((track) => track.canvasX === undefined && track.canvasY === undefined);
 
     let remainingHeight = 0;
 
     const updateHeight = () => {
-        const trackBinTop = (document.querySelector(trackRackId) as HTMLElement)?.offsetHeight ?? 0;
+        const trackBinTop = (document.querySelector(TriggerableElements.TRACK_RACK_ELEMENT) as HTMLElement)?.offsetHeight ?? 0;
         const trackBinBottom = (document.querySelector(TriggerableElements.TRACK_DISPOSAL_ELEMENT) as HTMLElement)?.offsetHeight ?? 0;
         remainingHeight = window.innerHeight - trackBinTop + trackBinBottom;
     }
-    
+
+    let trackRackElement: HTMLElement;
     onMount(() => {
         updateHeight();
         window.addEventListener('resize', updateHeight);
+
+        // trackRackElement.addEventListener('dragenter', () => isDraggingOverStore.set(true));
+        trackRackElement.addEventListener('dragover', (e:DragEvent) => {
+            e.preventDefault();
+            // isDraggingOverStore.set(true);
+        });
+        // trackRackElement.addEventListener('dragleave', () => isDraggingOverStore.set(false));
+        // trackRackElement.addEventListener('drop', () => isDraggingOverStore.set(false));
+        globalDraggingManager.registerElement(trackRackElement);
     });
 </script>
 
@@ -31,7 +40,7 @@
         <SearchBar/>
         <NowPlayingWidget/>
     </div>
-    <div id="{trackRackId}"
+    <div id="{TriggerableElements.TRACK_RACK_ELEMENT}" bind:this={trackRackElement}
         class="bg-stone-300 p-2 flex-grow space-y-2 rounded-md overflow-x-hidden text-center
         overflow-y-scroll scrollbar scrollbar-w-1 scrollbar-thumb-rounded-full scrollbar-thumb-stone-500"
         style="height: {remainingHeight}"
