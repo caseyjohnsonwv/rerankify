@@ -9,14 +9,15 @@ export class TrackManager {
     trackListStore: Writable<TrackModel[]>;
     albumTrackCountStore: Writable<Map<string, number>>;
 
-    constructor(trackList: TrackModel[]) {
-        this.currentTrackStore = writable<TrackModel>(undefined);
-        this.trackListStore = writable<TrackModel[]>(trackList);
-        this.albumTrackCountStore = writable<Map<string, number>>(new Map());
+    constructor() {
+        // initializers
+        this.currentTrackStore = writable(undefined);
+        this.trackListStore = writable([]);
+        this.albumTrackCountStore = writable(new Map());
     }
 
 
-    // handler for adding and removing tracks
+    // handlers for adding and removing tracks
 
 
     addTrack(track: TrackModel) {
@@ -137,4 +138,4 @@ export class TrackManager {
 }
 
 
-export const globalTrackManager = new TrackManager([]);
+export const globalTrackManager = new TrackManager();
