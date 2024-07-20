@@ -2,13 +2,22 @@
     import SearchResultTrack from "./SearchResultTrack.svelte";
     import SearchResultAlbum from "./SearchResultAlbum.svelte";
     import { searchResultStore, SearchResultType, searchResultTypeStore } from "$lib/searchResult";
+    import { globalDraggingManager } from "$lib/draggingManager";
+    import { onMount } from "svelte";
 
     $: searchResultType = $searchResultTypeStore as SearchResultType;
     $: albumSearchResults = $searchResultStore?.albums ?? [];
     $: trackSearchResults = $searchResultStore?.tracks ?? [];
+
+    let rootElement: HTMLElement;
+    onMount(() => {
+        rootElement.addEventListener('dragover', (e) => e.preventDefault());
+        globalDraggingManager.registerElement(rootElement);
+    });
 </script>
 
-<div class="bg-stone-300 bg-opacity-50 p-3 space-y-3 rounded-lg rounded-tl-none max-h-[32rem]
+<div bind:this={rootElement}
+    class="bg-stone-200 p-3 space-y-3 rounded-lg rounded-tl-none max-h-[32rem]
     overflow-y-scroll scrollbar scrollbar-w-2 scrollbar-thumb-rounded-full scrollbar-thumb-stone-500
     ">
     {#if searchResultType === SearchResultType.TRACKS}

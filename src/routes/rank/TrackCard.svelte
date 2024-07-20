@@ -80,7 +80,7 @@
 </script>
 
 <li draggable="true" id="{props.id}" bind:this={rootElement}
-    class="list-none w-full max-w-72 rounded-sm
+    class="list-none w-full max-w-72 rounded-sm 
     {$isDraggingStore ? 'opacity-60' : 'opacity-100'}
     {inCanvas ? 'ring-1 ring-stone-500 absolute' : 'relative'}"
     on:dragstart={handleDragStart}

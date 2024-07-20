@@ -30,8 +30,8 @@
 <div id="{TriggerableElements.CANVAS_ROOT_ELEMENT}" bind:this={rootElement}
     class="w-full h-full">
     {#if displaySearch}
-        <div class="flex flex-grow relative z-0">
-            <div class="absolute inset-2 z-10 w-5/6">
+        <div class="flex flex-grow relative z-10">
+            <div class="absolute inset-2 w-5/6">
                 <SearchResultsPane/>
             </div>
         </div>

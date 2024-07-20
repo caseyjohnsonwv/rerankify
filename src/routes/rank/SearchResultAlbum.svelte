@@ -37,7 +37,10 @@
             trackListResults.trackList.forEach((track) => globalTrackManager.addTrack(track));
             isAdding = false;
         }
-        else $trackListStore.forEach((track) => globalTrackManager.removeTrackById(track.id));
+        else {
+            $trackListStore.filter((track) => track.albumId === albumProps.id)
+                .forEach((track) => globalTrackManager.removeTrackById(track.id));
+        }
     }
 </script>
 

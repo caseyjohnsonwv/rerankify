@@ -88,6 +88,11 @@ export class DraggingManager {
             const offsetRight = el.offsetLeft + el.offsetWidth;
             return x >= el.offsetLeft && x <= offsetRight && y >= el.offsetTop && y <= offsetBottom;
         });
+        // edge case - don't trigger if anything else is displaying on top of the canvas
+        if (
+            boundedElements.find((el) => el.id === TriggerableElements.CANVAS_ROOT_ELEMENT) &&
+            boundedElements.length > 1
+        ) return undefined;
         return boundedElements.at(0);
     }
 }
