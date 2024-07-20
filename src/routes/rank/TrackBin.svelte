@@ -19,10 +19,6 @@
         const trackBinBottom = (document.querySelector(TriggerableElements.TRACK_DISPOSAL_ELEMENT) as HTMLElement)?.offsetHeight ?? 0;
         remainingHeight = window.innerHeight - trackBinTop + trackBinBottom;
     }
-
-    const handleDoubleClickDelete = async () => {
-        globalTrackManager.removeAllNonCanvasTracks();
-    }
     
     onMount(() => {
         updateHeight();
@@ -54,11 +50,4 @@
         {/if}
     </div>
     <TrackDisposal/>
-    <button on:dblclick={handleDoubleClickDelete}
-        class="flex flex-row justify-center items-center p-2 h-12 space-x-2 rounded-lg text-lg outline-none ring-1
-         text-stone-500 ring-stone-400 hover:text-red-500 hover:ring-red-500 hover:font-bold
-        ">
-        <span class="text-xs">Double click here to delete all tracks</span>
-        <i class="fa-solid fa-hand-pointer"></i>
-    </button>
 </div>

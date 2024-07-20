@@ -53,25 +53,25 @@ export class TrackManager {
         })
     }
 
-    removeAllNonCanvasTracks() {
-        this.globalAudio?.pause();
-        this.trackListStore.update((trackList) => {
-            const newTrackList: TrackModel[] = [];
-            trackList.forEach((track) => {
-                if (track.canvasX && track.canvasY) {
-                    newTrackList.push(track)
-                }
-                else {
-                    this.albumTrackCountStore.update((m) => {
-                        const newValue = Math.max(0, (m.get(track.albumId as string) ?? 0) - 1);
-                        m.set(track.albumId as string, newValue);
-                        return m;
-                    })
-                }
-            })
-            return newTrackList;
-        })
-    }
+    // removeAllNonCanvasTracks() {
+    //     this.globalAudio?.pause();
+    //     this.trackListStore.update((trackList) => {
+    //         const newTrackList: TrackModel[] = [];
+    //         trackList.forEach((track) => {
+    //             if (track.canvasX && track.canvasY) {
+    //                 newTrackList.push(track)
+    //             }
+    //             else {
+    //                 this.albumTrackCountStore.update((m) => {
+    //                     const newValue = Math.max(0, (m.get(track.albumId as string) ?? 0) - 1);
+    //                     m.set(track.albumId as string, newValue);
+    //                     return m;
+    //                 })
+    //             }
+    //         })
+    //         return newTrackList;
+    //     })
+    // }
 
 
     // handlers for canvas

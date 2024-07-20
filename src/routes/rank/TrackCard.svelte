@@ -3,7 +3,7 @@
     import { globalDraggingManager, TriggerableElements } from "$lib/draggingManager";
     import { globalTrackManager } from "$lib/trackManager";
     import { writable } from "svelte/store";
-    import { onMount } from "svelte";
+    import { afterUpdate, onMount } from "svelte";
 
     export let props: TrackModel;
 
@@ -36,8 +36,7 @@
                 case (TriggerableElements.CANVAS_ROOT_ELEMENT): {
                     const dragEvent = globalDraggingManager.getDragEvent();
                     if (dragEvent) {
-                        const newLocation = globalTrackManager.moveTrackToCanvasLocationById(props.id, dragEvent, dragOffset);
-                        setCardPosition(newLocation.x, newLocation.y)
+                        globalTrackManager.moveTrackToCanvasLocationById(props.id, dragEvent, dragOffset);
                     }
                     break;
                 }
@@ -45,16 +44,16 @@
         }
     })
 
-    onMount(() => {
-        if (props.canvasX && props.canvasY) {
-            setCardPosition(props.canvasX, props.canvasY)
-        }
+    afterUpdate(() => {
+        setCardPosition(props.canvasX, props.canvasY)
     })
 
-    const setCardPosition = (x: number, y: number) => {
-        rootElement.style.position = 'absolute';
-        rootElement.style.left = `${x}px`;
-        rootElement.style.top = `${y}px`;
+    const setCardPosition = (x: number | undefined, y: number | undefined) => {
+        if (x && y) {
+            rootElement.style.position = 'absolute';
+            rootElement.style.left = `${x}px`;
+            rootElement.style.top = `${y}px`;
+        }
     }
 
     const handleDragStart = async (event: DragEvent) => {
